@@ -16,11 +16,12 @@
         <td>{{ transaction.Amount }}</td>
       </tr>
     </table>
+
     <div class="expenses">
-      <!-- <div class="">
+      <div class="">
         <h1>Expenses:</h1>
         <p>{{ expenses }}</p>
-      </div> -->
+      </div>
       <div class="totaledExpenses">
         <h1>Total Expenses: $ {{ totalExpenses }}</h1>
       </div>
@@ -29,46 +30,23 @@
 </template>
 
 <script>
-import * as d3 from "d3";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "Home",
   data() {
-    return {
-      data: null,
-      expenses: [],
-      totalExpenses: null,
-    };
+    return {};
   },
   //LifeCycle hooks. Called asynchronous allow data to populate and be used.
   async created() {
     await this.loadData();
     await this.expense();
   },
+  computed: {
+    ...mapState(["data", "expenses", "totalExpenses"]),
+  },
 
   methods: {
-    //loads information from csv file and returns it to data
-    async loadData() {
-      await d3.csv("/statements/chase.csv").then((data) => {
-        console.log(data);
-        this.data = data;
-      });
-    },
-    //Takes data and for each amount push it to expenses.
-    //Once pushed take that data from expenses array and combine them
-    async expense() {
-      await this.data.forEach((el) => {
-        console.log(el.Amount);
-        let amount = el.Amount;
-        this.expenses.push(amount);
-        this.totalExpenses = this.expenses
-          .map((x) => {
-            return parseInt(x, 10);
-          })
-          .reduce((a, b) => {
-            return a + b;
-          });
-      });
-    },
+    ...mapActions(["loadData", "expense"]),
   },
 };
 </script>
