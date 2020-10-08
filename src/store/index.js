@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as d3 from "d3";
+// import db from "../firebase/"
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    //Calls in data from csv file
     async loadData({
       commit
     }) {
@@ -26,10 +28,12 @@ export default new Vuex.Store({
         commit("UPDATEDATA", data)
       });
     },
+    //Calculates the expense cost
     async expense({
       commit,
       state
     }) {
+      //try and catch to find error
       try {
         await state.data.forEach((el) => {
           let amount = el.Amount;
