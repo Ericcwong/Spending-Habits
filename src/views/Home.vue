@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <FileUpload />
     <table class="tableData">
       <tr>
         <th>Category</th>
@@ -31,8 +32,12 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import FileUpload from "@/components/FileUpload";
 export default {
   name: "Home",
+  components: {
+    FileUpload,
+  },
   data() {
     return {};
   },
