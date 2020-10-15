@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <FileUpload />
-    <table class="tableData">
+    <!-- <table class="tableData">
       <tr>
         <th>Category</th>
         <th>Description</th>
@@ -26,7 +26,7 @@
       <div class="totaledExpenses">
         <h1>Total Expenses: $ {{ totalExpenses }}</h1>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

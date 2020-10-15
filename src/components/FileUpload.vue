@@ -1,32 +1,52 @@
 <template>
   <div class="">
-    <form>
-      <input type="file" id="fileUpload" @change="uploadFile" />
-    </form>
-    {{ expenses }}
+    <input type="file" id="fileUpload" @change="handleFile" />
+    <table id="table">
+      <thead>
+        <th v-for="title in header" :key="title.id">{{ title }}</th>
+      </thead>
+      <tbody>
+        <tr v-for="transaction in content" :key="transaction.id">
+          <td v-for="test in transaction" :key="test.id">{{ test }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-// import * as d3 from "d3";
+import * as d3 from "d3";
+// import { Bar } from "vue-chartjs";
 export default {
   data() {
     return {
-      expenses: [],
+      label: [],
+      content: [],
+      header: null,
     };
   },
   methods: {
-    uploadFile(e) {
-      let reader = new FileReader();
-      let file = e.target.files[0];
+    async handleFile(event) {
+      //Targets file from DOM
+      let file = event.target.files[0];
+      //Creates a new reader
+      const reader = new FileReader();
+      //Reads the file as text/string
       reader.readAsText(file);
+      //When the file is completed...
       reader.onload = (e) => {
+        //contents takes what readAsText is
         let contents = e.target.result;
-        this.expenses = contents;
-        console.log(contents);
+        this.parseData(contents);
+        // this.create_table(contents);
       };
-      console.log(reader);
-      console.log(file);
+    },
+    async parseData(request) {
+      let data = await d3.csvParse(request, (data) => {
+        this.content.push(data);
+      });
+      console.log(data.columns);
+      this.header = await data.columns;
     },
   },
 };
