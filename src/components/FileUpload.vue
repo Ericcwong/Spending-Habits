@@ -3,10 +3,10 @@
     <input type="file" id="fileUpload" @change="handleFile" />
     <table id="table">
       <thead>
-        <th v-for="title in header" :key="title.id">{{ title }}</th>
+        <th v-for="title in state.header" :key="title.id">{{ title }}</th>
       </thead>
       <tbody>
-        <tr v-for="transaction in content" :key="transaction.id">
+        <tr v-for="transaction in state.content" :key="transaction.id">
           <td v-for="test in transaction" :key="test.id">{{ test }}</td>
         </tr>
       </tbody>
@@ -16,17 +16,18 @@
 
 <script>
 import * as d3 from "d3";
+import { reactive } from "@vue/composition-api";
 // import { Bar } from "vue-chartjs";
 export default {
-  data() {
-    return {
+  setup() {
+    const state = reactive({
       label: [],
       content: [],
       header: null,
-    };
-  },
-  methods: {
-    async handleFile(event) {
+    });
+    async function handleFile(event) {
+      state.content = [];
+      state.header = [];
       //Targets file from DOM
       let file = event.target.files[0];
       //Creates a new reader
@@ -37,20 +38,36 @@ export default {
       reader.onload = (e) => {
         //contents takes what readAsText is
         let contents = e.target.result;
-        this.parseData(contents);
+        parseData(contents);
         // this.create_table(contents);
       };
-    },
-    async parseData(request) {
-      let data = await d3.csvParse(request, (data) => {
-        this.content.push(data);
-      });
-      console.log(data.columns);
-      this.header = await data.columns;
-    },
+
+      async function parseData(request) {
+        let data = await d3.csvParse(request, (data) => {
+          state.content.push(data);
+        });
+        console.log(data.columns);
+        state.header = await data.columns;
+      }
+      // data() {
+      //   return {
+      //     label: [],
+      //     content: [],
+      //     header: null,
+      //   };
+      // },
+      // methods: {
+    }
+    return { state, handleFile };
   },
 };
+// },
 </script>
 
-<style>
+<style scoped>
+table,
+th,
+td {
+  border: 1px solid black;
+}
 </style>
